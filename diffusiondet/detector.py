@@ -45,17 +45,21 @@ def extract(a, t, x_shape):
     out = a.gather(-1, t)
     return out.reshape(batch_size, *((1,) * (len(x_shape) - 1)))
 
-
+# san : target noise schedule
 def cosine_beta_schedule(timesteps, s=0.008):
     """
     cosine schedule
-    as proposed in https://openreview.net/forum?id=-NEXDKk8gZ
+    as proposed in https://openreview.net/forum?id=-NEXDKk8gZ (Improved DDPM)
     """
     steps = timesteps + 1
     x = torch.linspace(0, timesteps, steps, dtype=torch.float64)
+
+
     alphas_cumprod = torch.cos(((x / timesteps) + s) / (1 + s) * math.pi * 0.5) ** 2
     alphas_cumprod = alphas_cumprod / alphas_cumprod[0]
     betas = 1 - (alphas_cumprod[1:] / alphas_cumprod[:-1])
+
+
     return torch.clip(betas, 0, 0.999)
 
 
@@ -80,6 +84,7 @@ class DiffusionDet(nn.Module):
         self.backbone = build_backbone(cfg)
         self.size_divisibility = self.backbone.size_divisibility
 
+        # san : Applying noise schedule
         # build diffusion
         timesteps = 1000
         sampling_timesteps = cfg.MODEL.DiffusionDet.SAMPLE_STEP
@@ -99,8 +104,14 @@ class DiffusionDet(nn.Module):
         self.scale = cfg.MODEL.DiffusionDet.SNR_SCALE
         self.box_renewal = True
         self.use_ensemble = True
+        
+        '''
+        [register_buffer]
 
-        self.register_buffer('betas', betas)
+        model의 정보로 취급해 training에서 update 되지 않음.
+        alpha, beta는 schedule에 따라서 미리 정해지므로 그대로 가져오면되므로 학습되서는 안됨.
+        '''
+        self.register_buffer('betas', betas) 
         self.register_buffer('alphas_cumprod', alphas_cumprod)
         self.register_buffer('alphas_cumprod_prev', alphas_cumprod_prev)
 

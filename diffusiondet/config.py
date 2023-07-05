@@ -49,7 +49,8 @@ def add_diffusiondet_config(cfg):
 
     # Diffusion
     cfg.MODEL.DiffusionDet.SNR_SCALE = 2.0
-    cfg.MODEL.DiffusionDet.SAMPLE_STEP = 1
+    cfg.MODEL.DiffusionDet.SAMPLE_STEP = 1 
+    # T를 어떤 간격으로 쪼갤지. T=1000, step=1이면 box마다 1 tiemstep 간격으로 1000번 반복해 sample함.
 
     # Inference
     cfg.MODEL.DiffusionDet.USE_NMS = True
