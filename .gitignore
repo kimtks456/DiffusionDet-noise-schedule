@@ -45,6 +45,6 @@ _darcs
 !/datasets/*.*
 /projects/*/datasets
 
-*.jpg
+# *.jpg
 nohup.out
 *.out
