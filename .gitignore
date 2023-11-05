@@ -48,3 +48,9 @@ _darcs
 # *.jpg
 nohup.out
 *.out
+
+# virtualenv
+bin
+lib
+pyvenv.cfg
+
