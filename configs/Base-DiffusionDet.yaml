@@ -1,6 +1,7 @@
 MODEL:
   META_ARCHITECTURE: "DiffusionDet"
-  WEIGHTS: "detectron2://ImageNetPretrained/torchvision/R-50.pkl"
+#  WEIGHTS: "detectron2://ImageNetPretrained/torchvision/R-50.pkl"
+  WEIGHTS: "models/R-50.pkl"
   PIXEL_MEAN: [123.675, 116.280, 103.530]
   PIXEL_STD: [58.395, 57.120, 57.375]
   BACKBONE:
@@ -16,7 +17,7 @@ MODEL:
     POOLER_RESOLUTION: 7
     POOLER_SAMPLING_RATIO: 2
 SOLVER:
-  IMS_PER_BATCH: 9
+  IMS_PER_BATCH: 6
   BASE_LR: 0.000025
   STEPS: (210000, 250000)
   MAX_ITER: 270000

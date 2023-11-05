@@ -36,6 +36,10 @@ from diffusiondet import DiffusionDetDatasetMapper, add_diffusiondet_config, Dif
 from diffusiondet.util.model_ema import add_model_ema_configs, may_build_model_ema, may_get_ema_checkpointer, EMAHook, \
     apply_model_ema_and_restore, EMADetectionCheckpointer
 
+# # ssl.SSLCertVerificationError: // 23.11.06
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
+
 
 class Trainer(DefaultTrainer):
     """ Extension of the Trainer class adapted to DiffusionDet. """

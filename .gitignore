@@ -54,4 +54,6 @@ bin
 lib
 pyvenv.cfg
 
+# odds and ends
+share
 
