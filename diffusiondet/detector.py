@@ -46,6 +46,12 @@ def extract(a, t, x_shape):
     return out.reshape(batch_size, *((1,) * (len(x_shape) - 1)))
 
 # san : target noise schedule
+
+
+def sigmoid(x):
+    return 1 / (1 + torch.exp(-x))
+
+
 def cosine_beta_schedule(timesteps, s=0.008):
     """
     cosine schedule
@@ -54,11 +60,29 @@ def cosine_beta_schedule(timesteps, s=0.008):
     steps = timesteps + 1
     x = torch.linspace(0, timesteps, steps, dtype=torch.float64)
 
+    # # 1. cosine-beta
+    # alphas_cumprod = torch.cos(((x / timesteps) + s) / (1 + s) * math.pi * 0.5) ** 2
+    # alphas_cumprod = alphas_cumprod / alphas_cumprod[0]
 
-    alphas_cumprod = torch.cos(((x / timesteps) + s) / (1 + s) * math.pi * 0.5) ** 2
-    alphas_cumprod = alphas_cumprod / alphas_cumprod[0]
+    # # 2. cosine
+    # s, e, tau = 0.2, 1, 3
+    # clip_min = 1e-9
+    # v_start = (torch.cos(torch.full_like(x, s * math.pi / 2))) ** (2 * tau)
+    # v_end = (torch.cos(torch.full_like(x, e * math.pi / 2))) ** (2 * tau)
+    # temp = (torch.cos(((x / timesteps) * (e - s) + s) * math.pi / 2)) ** (2 * tau)
+    # alphas_cumprod = (v_end - temp) / (v_end - v_start)
+    # alphas_cumprod = torch.clip(alphas_cumprod, clip_min, 1)  # Avoid division by zero in the next step
+
+    # 3. sigmoid
+    s, e, tau = -3, 3, 0.9
+    clip_min = 1e-9
+    v_start = sigmoid(torch.tensor(s) / tau)
+    v_end = sigmoid(torch.tensor(e) / tau)
+    temp = sigmoid(((x / timesteps) * (e - s) + s) / tau)
+    alphas_cumprod = (v_end - temp) / (v_end - v_start)
+    alphas_cumprod = torch.clip(alphas_cumprod, clip_min, 1)  # Avoid division by zero in the next step
+
     betas = 1 - (alphas_cumprod[1:] / alphas_cumprod[:-1])
-
 
     return torch.clip(betas, 0, 0.999)
 
