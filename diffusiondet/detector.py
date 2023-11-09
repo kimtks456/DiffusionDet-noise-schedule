@@ -74,7 +74,7 @@ def cosine_beta_schedule(timesteps, s=0.008):
     # alphas_cumprod = torch.clip(alphas_cumprod, clip_min, 1)  # Avoid division by zero in the next step
 
     # 3. sigmoid
-    s, e, tau = -3, 3, 0.9
+    s, e, tau = 0, 3, 0.3
     clip_min = 1e-9
     v_start = sigmoid(torch.tensor(s) / tau)
     v_end = sigmoid(torch.tensor(e) / tau)
