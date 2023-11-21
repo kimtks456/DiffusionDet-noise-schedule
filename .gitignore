@@ -56,4 +56,5 @@ pyvenv.cfg
 
 # odds and ends
 share
+eval_output/
 
